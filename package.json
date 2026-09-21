@@ -49,6 +49,7 @@
 		"connect-redis": "^10.0.0",
 		"cookie-parser": "^1.4.7",
 		"device-detector-js": "^3.0.3",
+		"docker": "^1.0.0",
 		"dotenv": "^17.4.2",
 		"express-session": "^1.19.0",
 		"geoip-lite": "^2.0.3",
