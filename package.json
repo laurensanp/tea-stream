@@ -57,6 +57,7 @@
 		"graphql-upload": "14",
 		"hi-base32": "^0.5.1",
 		"i18n-iso-countries": "^7.14.0",
+		"nodemailer": "^10.0.10",
 		"otpauth": "^9.5.2",
 		"prisma": "^7.10.0",
 		"qrcode": "^1.5.4",
