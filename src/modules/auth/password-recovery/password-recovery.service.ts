@@ -1,8 +1,4 @@
-import {
-	BadRequestException,
-	Injectable,
-	NotFoundException
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { hash } from 'argon2'
 import type { Request } from 'express'
 
@@ -11,7 +7,6 @@ import { PrismaService } from '@/src/core/prisma/prisma.service'
 import { checkTokenExpired } from '@/src/shared/utils/check-token-expired.util'
 import { generateToken } from '@/src/shared/utils/generate-token.util'
 import { getSessionMetadata } from '@/src/shared/utils/session-metadata.util'
-import { saveSession } from '@/src/shared/utils/session.util'
 
 import { MailService } from '../../libs/mail/mail.service'
 

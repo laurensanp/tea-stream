@@ -27,7 +27,7 @@ export class ProfileService {
 		const chunks: Buffer[] = []
 
 		for await (const chunk of file.createReadStream()) {
-			chunks.push(chunk)
+			chunks.push(chunk as Buffer)
 		}
 
 		const buffer = Buffer.concat(chunks)

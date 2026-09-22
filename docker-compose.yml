@@ -1,20 +1,23 @@
 services:
   db:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:18
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
     ports:
       - 5433:5432
     volumes:
+      # Correct data directory for postgres 18+; on 17 and older it is
+      # /var/lib/postgresql/data.
       - postgres_data:/var/lib/postgresql
     networks:
       - teastream-backend
   redis:
     container_name: redis
-    image: redis:latest
+    image: redis:8
     restart: always
     ports:
       - 6379:6379

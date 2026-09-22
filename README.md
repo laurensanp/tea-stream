@@ -121,8 +121,7 @@ S3_BUCKET_NAME=teastream
 
 `${VAR}` references are expanded both by Nest (`expandVariables`) and by `prisma.config.ts` (`dotenv-expand`).
 
-> [!NOTE]
-> `.env.example` currently only lists `DATABASE_URL`. The app and Prisma actually read **`POSTGRES_URI`**, so use that name.
+`.env.example` contains this same list, so `cp .env.example .env` and edit it is the quickest start. Note that the connection string variable is **`POSTGRES_URI`** (not `DATABASE_URL`) — that is the name the app and Prisma read.
 
 ### 3. Start PostgreSQL and Redis
 
@@ -130,7 +129,7 @@ S3_BUCKET_NAME=teastream
 docker compose up -d
 ```
 
-This starts PostgreSQL on host port **5433** and Redis on **6379** (password-protected with `REDIS_PASSWORD`). Both use named volumes, so data survives restarts.
+This starts PostgreSQL 18 on host port **5433** and Redis 8 on **6379** (password-protected with `REDIS_PASSWORD`). Both use named volumes, so data survives restarts. The database is created as `POSTGRES_DATABASE` with `POSTGRES_USER` as the owner, so it matches `POSTGRES_URI` out of the box.
 
 ### 4. Set up the database
 
@@ -167,7 +166,7 @@ In development the app loads `.env`. In any other environment the file is **igno
 | `POSTGRES_URI` | PostgreSQL connection string, used by the app and Prisma CLI. |
 | `REDIS_URI`    | Redis connection string, used for session storage.            |
 
-`docker-compose.yml` additionally reads `POSTGRES_USER`, `POSTGRES_PASSWORD` and `REDIS_PASSWORD` to set up the containers.
+`docker-compose.yml` additionally reads `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DATABASE` and `REDIS_PASSWORD` to set up the containers.
 
 ### Sessions and cookies
 
@@ -210,11 +209,12 @@ All of these except the Docker-only ones are read with `getOrThrow`, so the app 
 | `npm run start:dev`    | Start in watch mode.                                           |
 | `npm run start:debug`  | Start in watch mode with the Node debugger attached.           |
 | `npm run start`        | Start once, without watching.                                  |
-| `npm run build`        | Compile to `dist/`.                                            |
-| `npm run start:prod`   | Run the compiled build (`node dist/main`).                     |
+| `npm run build`        | Compile to `dist/` (the entry point lands at `dist/src/main.js`, because the `@/…` alias makes the project root the compilation root). |
+| `npm run start:prod`   | Run the compiled build (`node dist/src/main`).                 |
 | `npm run lint`         | Run ESLint and fix what it can.                                |
 | `npm run format`       | Format with Prettier.                                          |
 | `npm run test`         | Run unit tests (`*.spec.ts` under `src/`).                     |
+| `npm run test:e2e`     | Run end-to-end tests (`*.e2e-spec.ts` under `test/`).          |
 | `npm run test:cov`     | Run unit tests with coverage.                                  |
 | `npm run db:push`      | Create and apply a new migration from schema changes (`prisma migrate dev`). |
 | `npm run db:deploy`    | Apply pending migrations (`prisma migrate deploy`), use this in production. |
@@ -233,6 +233,9 @@ All of these except the Docker-only ones are read with `getOrThrow`, so the app 
 │   └── generated/             # Generated Prisma client (imported as @prisma/generated)
 ├── prisma.config.ts           # Prisma CLI config (reads POSTGRES_URI)
 ├── docker-compose.yml         # Local PostgreSQL + Redis
+├── test/
+│   ├── jest-setup.ts          # Pins NODE_ENV for tests
+│   └── jest-e2e.json          # Jest config for *.e2e-spec.ts
 └── src/
     ├── main.ts                # Bootstrap: cookies, uploads, validation, sessions, CORS
     ├── core.module.ts         # Root module wiring everything together
@@ -265,7 +268,7 @@ All of these except the Docker-only ones are read with `getOrThrow`, so the app 
 Each feature module follows the same layout: `*.module.ts`, `*.resolver.ts`, `*.service.ts`, plus `inputs/` (validated GraphQL inputs) and `models/` (GraphQL output types).
 
 **Path aliases** (from `tsconfig.json`):
-- `@/…` resolves from the project root, e.g. `@/src/core/prisma/prisma.service`
+- `@/…` resolves from the project root, e.g. `@/src/core/prisma/prisma.service`. There is no `baseUrl`; the `paths` targets are relative to `tsconfig.json` itself.
 - `@prisma/generated` resolves to `prisma/generated/client`
 
 ## Data model

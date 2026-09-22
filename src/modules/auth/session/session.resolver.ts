@@ -5,7 +5,6 @@ import { UserAgent } from '@/src/shared/decorators/user-agent.decorator'
 import type { GqlContext } from '@/src/shared/types/gql-context'
 
 import { AuthModel } from '../account/models/auth.model'
-import { UserModel } from '../account/models/user.model'
 
 import { LoginInput } from './inputs/login.input'
 import { SessionModel } from './models/session.model'

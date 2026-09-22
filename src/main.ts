@@ -56,4 +56,7 @@ async function bootstrap() {
 	const port = config.getOrThrow<number>('APPLICATION_PORT')
 	await app.listen(port)
 }
-bootstrap()
+void bootstrap().catch(error => {
+	console.error('Failed to start the application', error)
+	process.exit(1)
+})

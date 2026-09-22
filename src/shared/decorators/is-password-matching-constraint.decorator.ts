@@ -15,7 +15,7 @@ export class IsPasswordMatchingConstraint implements ValidatorConstraintInterfac
 		const obj = validationArguments?.object as NewPasswordInput
 		return obj.password === passwordRepeat
 	}
-	public defaultMessage?(validationArguments?: ValidationArguments): string {
+	public defaultMessage(): string {
 		return "Password don't match"
 	}
 }
